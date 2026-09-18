@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, of, switchMap, tap } from 'rxjs';
@@ -9,12 +9,16 @@ import { AuthActions } from './auth.actions';
 
 @Injectable()
 export class AuthEffects {
-  constructor(
-    private actions$: Actions,
-    private authApi: AuthApiService,
-    private tokenStorage: TokenStorageService,
-    private router: Router,
-  ) {}
+  // inject() at the field level, declared before the effect fields below -
+  // guarantees these are assigned before createEffect() reads them.
+  // (Constructor-parameter injection does NOT give that guarantee: compiled
+  // field initializers run before the constructor body assigns
+  // parameter properties, so `this.actions$` would still be undefined
+  // when `createEffect(() => this.actions$.pipe(...))` executes.)
+  private actions$ = inject(Actions);
+  private authApi = inject(AuthApiService);
+  private tokenStorage = inject(TokenStorageService);
+  private router = inject(Router);
 
   login$ = createEffect(() =>
     this.actions$.pipe(
