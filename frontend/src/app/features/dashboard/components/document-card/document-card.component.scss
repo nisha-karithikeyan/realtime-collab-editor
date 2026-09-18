@@ -1,0 +1,89 @@
+.card {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+
+  &:hover {
+    border-color: #c7c9f5;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.open-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+
+  &:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: -2px;
+    border-radius: 10px;
+  }
+
+  .icon {
+    font-size: 1.4rem;
+  }
+
+  .title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .updated {
+    font-size: 0.78rem;
+    color: #6b7280;
+  }
+
+  input {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #6366f1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+}
+
+.actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+
+  .card:hover & {
+    opacity: 1;
+  }
+
+  button {
+    border: none;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 5px 6px;
+    border-radius: 6px;
+
+    &:hover {
+      background: #f3f4f6;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #6366f1;
+      opacity: 1;
+    }
+  }
+}

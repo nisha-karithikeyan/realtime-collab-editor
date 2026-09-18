@@ -9,14 +9,16 @@ import { authInterceptor } from './core/auth/auth.interceptor';
 import { restoreSessionOnBootstrap } from './core/auth/session-restore';
 import { AuthEffects } from './core/auth/store/auth.effects';
 import { authReducer } from './core/auth/store/auth.reducer';
+import { DocumentsEffects } from './core/documents/store/documents.effects';
+import { documentsReducer } from './core/documents/store/documents.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideStore({ auth: authReducer }),
-    provideEffects([AuthEffects]),
+    provideStore({ auth: authReducer, documents: documentsReducer }),
+    provideEffects([AuthEffects, DocumentsEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAppInitializer(restoreSessionOnBootstrap()),
   ],

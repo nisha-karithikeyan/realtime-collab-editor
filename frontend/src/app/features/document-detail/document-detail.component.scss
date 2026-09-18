@@ -1,0 +1,37 @@
+.topbar {
+  padding: 14px 20px;
+  border-bottom: 1px solid #e5e7eb;
+
+  .back {
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+main {
+  padding: 24px 20px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 8px;
+}
+
+.placeholder-note {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.banner.error {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: #fef2f2;
+  color: #b91c1c;
+}

@@ -1,0 +1,25 @@
+@if (isEditing()) {
+  <div class="item editing">
+    <span class="icon" aria-hidden="true">📁</span>
+    <input
+      #nameInput
+      type="text"
+      [(ngModel)]="draftName"
+      (keydown.enter)="confirmEdit()"
+      (keydown.escape)="cancelEdit()"
+      (blur)="confirmEdit()"
+      aria-label="Folder name"
+    />
+  </div>
+} @else {
+  <div class="item">
+    <button type="button" class="open-btn" (click)="open.emit(folder().id)">
+      <span class="icon" aria-hidden="true">📁</span>
+      <span class="name">{{ folder().name }}</span>
+    </button>
+    <div class="actions">
+      <button type="button" title="Rename" (click)="startEditing()">✏️</button>
+      <button type="button" title="Delete" (click)="confirmDelete()">🗑️</button>
+    </div>
+  </div>
+}

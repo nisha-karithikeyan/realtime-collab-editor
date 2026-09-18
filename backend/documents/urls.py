@@ -1,4 +1,9 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-# Document/Folder endpoints land here in slice 2.
-urlpatterns = []
+from .views import DocumentViewSet, FolderViewSet
+
+router = DefaultRouter()
+router.register("folders", FolderViewSet, basename="folder")
+router.register("documents", DocumentViewSet, basename="document")
+
+urlpatterns = router.urls

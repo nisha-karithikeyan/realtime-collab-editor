@@ -1,0 +1,24 @@
+<div class="card">
+  <button type="button" class="open-btn" (click)="open.emit(document().id)">
+    <span class="icon" aria-hidden="true">📄</span>
+    @if (isEditing()) {
+      <input
+        #titleInput
+        type="text"
+        [(ngModel)]="draftTitle"
+        (click)="$event.stopPropagation()"
+        (keydown.enter)="confirmEdit()"
+        (keydown.escape)="cancelEdit()"
+        (blur)="confirmEdit()"
+        aria-label="Document title"
+      />
+    } @else {
+      <span class="title">{{ document().title }}</span>
+    }
+    <span class="updated">Edited {{ document().updated_at | date: 'medium' }}</span>
+  </button>
+  <div class="actions">
+    <button type="button" title="Rename" (click)="startEditing()">✏️</button>
+    <button type="button" title="Delete" (click)="confirmDelete()">🗑️</button>
+  </div>
+</div>
