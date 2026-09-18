@@ -21,13 +21,11 @@ class EditorConsumerTests(TransactionTestCase):
     def _url(self, token):
         return f"/ws/documents/{self.document.id}/?token={token}"
 
-    def _communicator(self, path):
-        # AllowedHostsOriginValidator requires an Origin header (every
-        # real browser sends one on WS connections; the test client
-        # doesn't by default).
-        return WebsocketCommunicator(
-            application, path, headers=[(b"origin", b"http://localhost:4200")]
-        )
+    def _communicator(self, path, origin=b"http://localhost:4200"):
+        # OriginValidator requires an Origin header (every real browser
+        # sends one on WS connections; the test client doesn't by
+        # default).
+        return WebsocketCommunicator(application, path, headers=[(b"origin", origin)])
 
     async def test_connect_sends_initial_state(self):
         communicator = self._communicator(self._url(self.owner_token))
@@ -50,6 +48,25 @@ class EditorConsumerTests(TransactionTestCase):
         connected, close_code = await communicator.connect()
         self.assertFalse(connected)
         self.assertEqual(close_code, 4401)
+
+    async def test_accepts_any_configured_cors_origin_not_just_the_first(self):
+        # Regression test: production had the frontend (a different
+        # domain entirely, Vercel vs Render) silently rejected because
+        # the WS layer was checking Origin against ALLOWED_HOSTS (the
+        # backend's own domain) instead of the actual allowed frontend
+        # origins. This connects using the second configured origin, not
+        # the first, to prove the whole list is honored.
+        communicator = self._communicator(self._url(self.owner_token), origin=b"http://127.0.0.1:4200")
+        connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+        await communicator.disconnect()
+
+    async def test_rejects_connection_from_disallowed_origin(self):
+        communicator = self._communicator(
+            self._url(self.owner_token), origin=b"https://evil.example.com"
+        )
+        connected, _ = await communicator.connect()
+        self.assertFalse(connected)
 
     async def test_update_from_one_client_persists_and_broadcasts_to_another(self):
         client_a = self._communicator(self._url(self.owner_token))
