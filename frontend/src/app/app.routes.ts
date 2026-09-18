@@ -36,9 +36,12 @@ export const routes: Routes = [
     path: 'documents/:id',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/document-detail/document-detail.component').then(
-        (m) => m.DocumentDetailComponent,
-      ),
+      import('./features/editor/editor.component').then((m) => m.EditorComponent),
+  },
+  {
+    path: 'graph',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/graph/graph.component').then((m) => m.GraphComponent),
   },
   { path: '**', redirectTo: 'documents' },
 ];

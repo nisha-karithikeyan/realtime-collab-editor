@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -18,16 +18,23 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
 import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton/loading-skeleton.component';
 import { DocumentCardComponent } from './components/document-card/document-card.component';
 import { FolderItemComponent } from './components/folder-item/folder-item.component';
+import { PageTreeRootComponent } from './components/page-tree/page-tree.component';
+import { DocumentsApiService } from '../../core/documents/services/documents-api.service';
+import { DocumentTreeNode } from '../../core/documents/models';
+import { firstValueFrom } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     EmptyStateComponent,
     LoadingSkeletonComponent,
     FolderItemComponent,
     DocumentCardComponent,
+    PageTreeRootComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -35,6 +42,9 @@ import { FolderItemComponent } from './components/folder-item/folder-item.compon
 export class DashboardComponent implements OnInit {
   private store = inject(Store);
   private router = inject(Router);
+  private docsApi = inject(DocumentsApiService);
+
+  pageTree = signal<DocumentTreeNode[]>([]);
 
   user = toSignal(this.store.select(selectCurrentUser), { initialValue: null });
   breadcrumb = toSignal(this.store.select(selectBreadcrumb), { initialValue: [] });
@@ -49,6 +59,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(DocumentsActions.foldersRequested());
     this.store.dispatch(DocumentsActions.folderOpened({ folderId: null }));
+    this.loadPageTree();
+  }
+
+  private async loadPageTree(): Promise<void> {
+    this.pageTree.set(await firstValueFrom(this.docsApi.pageTree()));
   }
 
   get currentFolderId(): string | null {
@@ -90,6 +105,7 @@ export class DashboardComponent implements OnInit {
         folder: this.currentFolderId,
       }),
     );
+    setTimeout(() => this.loadPageTree(), 400);
   }
 
   renameFolder(event: { id: string; name: string }): void {

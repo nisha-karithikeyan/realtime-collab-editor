@@ -11,68 +11,76 @@
   }
 </header>
 
-<main>
-  <div class="toolbar">
-    <nav class="breadcrumb" aria-label="Folder path">
-      <button type="button" (click)="openFolder(null)" [class.current]="currentFolderId === null">
-        My documents
-      </button>
-      @for (crumb of breadcrumb(); track crumb.id) {
-        <span class="sep" aria-hidden="true">/</span>
-        <button
-          type="button"
-          (click)="openFolder(crumb.id)"
-          [class.current]="crumb.id === currentFolderId"
-        >
-          {{ crumb.name }}
+<div class="layout">
+  <aside class="sidebar">
+    <a routerLink="/graph" class="graph-link">🕸️ Graph view</a>
+    <h2>Pages</h2>
+    <app-page-tree [nodes]="pageTree()" (open)="openDocument($event)"></app-page-tree>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <nav class="breadcrumb" aria-label="Folder path">
+        <button type="button" (click)="openFolder(null)" [class.current]="currentFolderId === null">
+          My documents
         </button>
+        @for (crumb of breadcrumb(); track crumb.id) {
+          <span class="sep" aria-hidden="true">/</span>
+          <button
+            type="button"
+            (click)="openFolder(crumb.id)"
+            [class.current]="crumb.id === currentFolderId"
+          >
+            {{ crumb.name }}
+          </button>
+        }
+      </nav>
+
+      <div class="toolbar-actions">
+        <button type="button" class="secondary" (click)="createFolder()">+ Folder</button>
+        <button type="button" class="primary" (click)="createDocument()">+ Document</button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="banner error" role="alert">{{ error() }}</p>
+    }
+
+    @if (isLoading) {
+      <div class="loading-block">
+        <app-loading-skeleton [rows]="4" [widths]="[100, 100, 100, 100]"></app-loading-skeleton>
+      </div>
+    } @else if (isEmpty) {
+      <app-empty-state
+        title="No documents yet"
+        subtitle="Create your first document or folder to get started."
+      ></app-empty-state>
+    } @else {
+      @if (folders().length > 0) {
+        <section class="folders">
+          @for (folder of folders(); track folder.id) {
+            <app-folder-item
+              [folder]="folder"
+              (open)="openFolder($event)"
+              (rename)="renameFolder($event)"
+              (remove)="deleteFolder($event)"
+            ></app-folder-item>
+          }
+        </section>
       }
-    </nav>
 
-    <div class="toolbar-actions">
-      <button type="button" class="secondary" (click)="createFolder()">+ Folder</button>
-      <button type="button" class="primary" (click)="createDocument()">+ Document</button>
-    </div>
-  </div>
-
-  @if (error()) {
-    <p class="banner error" role="alert">{{ error() }}</p>
-  }
-
-  @if (isLoading) {
-    <div class="loading-block">
-      <app-loading-skeleton [rows]="4" [widths]="[100, 100, 100, 100]"></app-loading-skeleton>
-    </div>
-  } @else if (isEmpty) {
-    <app-empty-state
-      title="No documents yet"
-      subtitle="Create your first document or folder to get started."
-    ></app-empty-state>
-  } @else {
-    @if (folders().length > 0) {
-      <section class="folders">
-        @for (folder of folders(); track folder.id) {
-          <app-folder-item
-            [folder]="folder"
-            (open)="openFolder($event)"
-            (rename)="renameFolder($event)"
-            (remove)="deleteFolder($event)"
-          ></app-folder-item>
-        }
-      </section>
+      @if (documents().length > 0) {
+        <section class="documents-grid">
+          @for (document of documents(); track document.id) {
+            <app-document-card
+              [document]="document"
+              (open)="openDocument($event)"
+              (rename)="renameDocument($event)"
+              (remove)="deleteDocument($event)"
+            ></app-document-card>
+          }
+        </section>
+      }
     }
-
-    @if (documents().length > 0) {
-      <section class="documents-grid">
-        @for (document of documents(); track document.id) {
-          <app-document-card
-            [document]="document"
-            (open)="openDocument($event)"
-            (rename)="renameDocument($event)"
-            (remove)="deleteDocument($event)"
-          ></app-document-card>
-        }
-      </section>
-    }
-  }
-</main>
+  </main>
+</div>

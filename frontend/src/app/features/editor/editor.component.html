@@ -1,0 +1,42 @@
+<header class="topbar">
+  <a routerLink="/documents" class="back">← My documents</a>
+  <app-presence-bar [status]="connectionStatus()" [users]="presenceList()"></app-presence-bar>
+</header>
+
+<main>
+  @if (loadFailed()) {
+    <p class="banner error" role="alert">
+      Couldn't load this document. It may have been deleted, or you may not have access to it.
+    </p>
+  } @else {
+    @if (!document()) {
+      <app-loading-skeleton [rows]="1" [widths]="[40]"></app-loading-skeleton>
+    } @else {
+      <input
+        class="title-input"
+        [(ngModel)]="title"
+        (blur)="onTitleBlur()"
+        aria-label="Document title"
+      />
+
+      @if (tags().length > 0) {
+        <div class="tag-chips">
+          @for (tag of tags(); track tag) {
+            <span class="tag-chip">#{{ tag }}</span>
+          }
+        </div>
+      }
+    }
+
+    <!-- Unconditionally present (not gated on the metadata fetch above) -
+         the Yjs/WebSocket connection only needs the document id from the
+         route, which is available synchronously, so the editor mounts
+         independently of - and usually before - the REST metadata call
+         resolves. -->
+    <div class="editor-surface" #editorContainer></div>
+
+    @if (document()) {
+      <app-backlinks-panel [backlinks]="backlinks()" (open)="openDocument($event)"></app-backlinks-panel>
+    }
+  }
+</main>

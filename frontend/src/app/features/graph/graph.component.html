@@ -1,0 +1,18 @@
+<header class="topbar">
+  <a routerLink="/documents" class="back">← My documents</a>
+  <h1>Graph view</h1>
+</header>
+
+<main>
+  @if (loadFailed()) {
+    <p class="banner error" role="alert">Couldn't load the graph. Try again in a moment.</p>
+  } @else if (loading()) {
+    <app-loading-skeleton [rows]="1" [widths]="[100]"></app-loading-skeleton>
+  } @else if (isEmpty()) {
+    <app-empty-state
+      title="Nothing to graph yet"
+      subtitle="Link pages together with [[wiki-links]] to see them appear here."
+    ></app-empty-state>
+  }
+  <svg #svgRef></svg>
+</main>
