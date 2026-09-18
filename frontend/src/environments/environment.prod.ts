@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://REPLACE-WITH-RENDER-URL.onrender.com/api',
-  wsBaseUrl: 'wss://REPLACE-WITH-RENDER-URL.onrender.com/ws',
+  apiBaseUrl: 'https://realtime-collab-editor-qmwr.onrender.com/api',
+  wsBaseUrl: 'wss://realtime-collab-editor-qmwr.onrender.com/ws',
 };
