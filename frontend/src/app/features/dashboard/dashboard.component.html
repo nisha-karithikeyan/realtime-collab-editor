@@ -1,0 +1,17 @@
+<header class="topbar">
+  <span class="brand">Collab Editor</span>
+  @if (user()) {
+    <div class="user-chip">
+      <span class="avatar" [style.background]="user()!.avatar_color">{{ user()!.name?.charAt(0) || user()!.email.charAt(0) | uppercase }}</span>
+      <span>{{ user()!.name || user()!.email }}</span>
+      <button type="button" (click)="logout()">Log out</button>
+    </div>
+  }
+</header>
+
+<main>
+  <app-empty-state
+    title="No documents yet"
+    subtitle="Document creation lands here in the next build slice."
+  ></app-empty-state>
+</main>

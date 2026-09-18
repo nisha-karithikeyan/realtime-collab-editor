@@ -1,0 +1,25 @@
+# Python
+env/
+__pycache__/
+*.pyc
+db.sqlite3
+staticfiles/
+
+# Node
+node_modules/
+dist/
+.angular/
+
+# Env files (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# Editor/OS
+.vscode/
+.DS_Store
+*.log
+
+# Reference-only fork of the original starter repo (has its own git history,
+# not part of this project)
+starter/
